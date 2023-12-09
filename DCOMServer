@@ -1,0 +1,45 @@
+using System;
+using System.Runtime.InteropServices;
+
+namespace DCOMServer
+{
+    [ComVisible(true)]
+    public interface IMyServer
+    {
+        string GetMessage();
+    }
+
+    [ComVisible(true)]
+    public class MyServer : IMyServer
+    {
+        public string GetMessage()
+        {
+            return "Hola desde el servidor DCOM";
+        }
+    }
+
+    class Program
+    {
+        static void Main()
+        {
+            try
+            {
+                // Registra el tipo en tiempo de ejecución
+                Type type = Type.GetTypeFromProgID("DCOMServer.MyServer");
+                if (type != null)
+                {
+                    var server = Activator.CreateInstance(type) as IMyServer;
+                    Console.WriteLine(server.GetMessage());
+                }
+                else
+                {
+                    Console.WriteLine("No se pudo encontrar el tipo.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+    }
+}
